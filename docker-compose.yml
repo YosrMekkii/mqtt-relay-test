@@ -3,16 +3,18 @@ services:
   rabbitmq:
     image: rabbitmq:3.11-management
     ports:
-      - "15672:15672"  # UI RabbitMQ
-      - "1883:1883"    # MQTT RabbitMQ
+      - "15672:15672"
+      - "1883:1883"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-    command: rabbitmq-plugins enable rabbitmq_mqtt --offline
+    volumes:
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+    command: rabbitmq-plugins enable rabbitmq_mqtt && rabbitmq-server  # Optionnel si le volume suffit
 
   mosquitto:
     image: eclipse-mosquitto:2.0
     ports:
-      - "1884:1883"  # Mosquitto sur 1884
+      - "1884:1883"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
